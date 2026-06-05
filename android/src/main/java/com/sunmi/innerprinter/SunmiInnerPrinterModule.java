@@ -102,7 +102,14 @@ public class SunmiInnerPrinterModule extends ReactContextBaseJavaModule {
         mFilter.addAction(KNIFE_ERROR_2_ACTION);
         mFilter.addAction(OVER_HEATING_ACITON);
         mFilter.addAction(FIRMWARE_UPDATING_ACITON);
-        getReactApplicationContext().registerReceiver(receiver, mFilter);
+        // Android 13+ (API 33) requires an explicit export flag when registering
+        // a receiver for non-system broadcasts. The Sunmi printer service is an
+        // external app, so the receiver must be exported.
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            getReactApplicationContext().registerReceiver(receiver, mFilter, Context.RECEIVER_EXPORTED);
+        } else {
+            getReactApplicationContext().registerReceiver(receiver, mFilter);
+        }
         Log.d("PrinterReceiver", "------------ init ");
     }
 
