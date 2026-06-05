@@ -1,4 +1,13 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.sunmi.innerprinter">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- Android 11+ (API 30+) package visibility: required so the app can see
+       and bind the Sunmi printer AIDL service. Matches the bind intent used in
+       SunmiInnerPrinterModule (package + action woyou.aidlservice.jiuiv5). -->
+  <queries>
+    <package android:name="woyou.aidlservice.jiuiv5" />
+    <intent>
+      <action android:name="woyou.aidlservice.jiuiv5.IWoyouService" />
+    </intent>
+  </queries>
   <application>
   <receiver android:name="com.sunmi.innerprinter.PrinterReceiver" android:enabled="true" android:exported="true">
       <intent-filter android:priority="1000">

@@ -1,40 +1,50 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.1'
-    }
-}
-
 apply plugin: 'com.android.library'
 
+def safeExtGet(prop, fallback) {
+    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
+
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    namespace "com.sunmi.innerprinter"
+    compileSdkVersion safeExtGet('compileSdkVersion', 35)
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 28
+        minSdkVersion safeExtGet('minSdkVersion', 24)
+        targetSdkVersion safeExtGet('targetSdkVersion', 35)
         versionCode 1
         versionName "1.0"
     }
+
+    // AGP 8 requires AIDL to be explicitly enabled; this module ships .aidl
+    // service definitions under src/main/java (see sourceSets below).
+    buildFeatures {
+        aidl true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
     lintOptions {
         abortOnError false
     }
-     sourceSets {
-    main {
-          aidl.srcDirs = ['src/main/java']
-      }
-  }
+
+    sourceSets {
+        main {
+            aidl.srcDirs = ['src/main/java']
+        }
+    }
 }
 
 repositories {
+    google()
     mavenCentral()
 }
 
 dependencies {
-    compile 'com.facebook.react:react-native:[0.55.4,)'
-    compile "com.google.zxing:core:3.2.1"
+    // Resolved to com.facebook.react:react-android by the host app's
+    // React Native Gradle Plugin dependency substitution.
+    implementation 'com.facebook.react:react-native:+'
+    implementation 'com.google.zxing:core:3.3.3'
 }
